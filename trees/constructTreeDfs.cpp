@@ -79,6 +79,30 @@ void print(TreeNode*a){
     print(a->right);
 }
 
+vector<vector<int>> fun(TreeNode* root) {
+    if(!root) return {};
+    queue<TreeNode*>q;
+    q.push(root);
+    q.push(nullptr);
+    vector<vector<int>>ans;
+    while(!q.empty()){
+        vector<int>v;
+        while(!q.empty() && q.front()!=nullptr){
+            TreeNode*t=q.front();
+            q.pop();
+            if(t){
+                v.push_back(t->value);
+                if(t->left) q.push(t->left);
+                if(t->right) q.push(t->right);
+            }
+        }
+        q.pop();
+        ans.push_back(v);
+        if(!q.empty()) q.push(nullptr);
+    }
+    return ans;
+}
+
 int main() {
     fast_io;
 
@@ -88,8 +112,27 @@ int main() {
         cin>>n;
         vector<int>nums(n);
         for(int i=0;i<n;i++) cin>>nums[i];
-        TreeNode *ans=f(nums,0);
-        print(ans);
+        TreeNode *root=f(nums,0);
+        print(root);
+        cout<<endl;
+        vector<vector<int>>sums=fun(root);
+        vector<int>sum;
+        for(int i=0;i<sums.size();i++){
+            int sz=sums[i].size();
+            int summation=0;
+            for(int j=0;j<sz;j++) summation+=sums[i][j];
+            sum.push_back(summation);
+        }
+        vector<int>ans(sums.size());
+        ans[0]=0;
+        ans[1]=0;
+        int diff=sum[1]-sum[0];
+        for(int i=2;i<ans.size();i++){
+            int ele=sum[i-1]+diff;
+            int answer=ele-sum[i];
+            ans[i]=answer;
+        }
+        for(int i=0;i<ans.size();i++) cout<<ans[i]<<" ";
     }
 
     return 0;
